@@ -1,8 +1,9 @@
 using CountriesChallenge.Domain.Interfaces;
+using CountriesChallenge.Helpers;
 using CountriesChallenge.Infra;
 using CountriesChallenge.Infra.Repositories;
-using CountriesChallenge.Middleware;
 using CountriesChallenge.Service;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace CountriesChallenge
+namespace CountriesChallenge.Api
 {
     public class Startup
     {
@@ -33,23 +34,51 @@ namespace CountriesChallenge
 
             services.AddDbContext<Context>(options => options.UseInMemoryDatabase("CountryChallenge"));
 
-            services.AddScoped<ICountryRepository, CountryRepository>();
-            services.AddScoped<ICountryService, CountryService>();
-            
+            services.AddAuthentication("BasicAuth")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("BasicAuth", null);
+
             services.AddCors(options =>
             {
-            options.AddPolicy(MyAllowSpecificOrigins,
-                builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://locahost:3000")
+                            .AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
             });
+
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<ICountryService, CountryService>();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CountriesChallenge.Api", Version = "v1" });
+
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authorization header using the Bearer scheme"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "basic"
+                                }
+                            },
+                            new string[] {}
+                    }
+                });
             });
         }
 
@@ -64,11 +93,11 @@ namespace CountriesChallenge
 
             app.UseHttpsRedirection();
 
-            //app.UseMiddleware<BasicAuthenticationMiddleware>();
-
             app.UseRouting();
 
             app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

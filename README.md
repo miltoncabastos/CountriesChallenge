@@ -10,7 +10,6 @@
  <a href="#tecnologias">Tecnologias</a> • 
  <a href="#observações-importantes">Observações Importantes</a> • 
  <a href="#executando-a-aplicação">Executando a Aplicação</a> • 
- <a href="#urls-da-aplicação">URLs da Aplicação</a> • 
  <a href="#sobre-mim">Sobre Mim</a>
 </p>
 
@@ -55,12 +54,15 @@ node -v
 dotnet --list-sdks
 ```
 - faça o clone deste repositório para o seu computador.
-### * executando o backend *
-1. acesse a pasta frontend com prompt de comando da sua preferência
+### **executando o backend**
+1. acesse a pasta backend com prompt de comando da sua preferência
 2. restaure os pacotes da aplicação com `dotnet restore`
 3. construa a aplicação com `dotnet build`
-4. e execute a aplicação com `dotnet run`
-### executando graphcountries [github](https://github.com/lennertVanSever/graphcountries) do Repositório Original
+4. e execute a aplicação com `dotnet watch run --project ./CountriesChallenge.Api\CountriesChallenge.Api.csproj`
+5. verifique se a aplicação está rodando utilizando o swagger em https://localhost:5001/swagger
+    - login: admin
+    - senha: admin
+### **executando graphcountries**
 
 1. acesse a pasta graphcountries com prompt de comando da sua preferência
 2. crei um arquivo .env na pasta raiz.
@@ -75,26 +77,15 @@ DB_PASSWORD=sterilizers-screen-displacements
 ```
 3. instale as dependências do projeto com `npm install`
 4. inicie a aplicação com `npm run dev`  
+5. playground disponível em http://localhost:8080/
 
 ### Executando o frontend
 1. acesse a pasta frontend com prompt de comando da sua preferência
-2. crei um arquivo .env na pasta raiz.
-    - aqui iremos informar a url padrão do nosso backend
-```
-API_ENDPOINT=http://localhost:5000
-```
-3. instale as dependências do projeto com `npm install`
-4. inicie a aplicação com `npm start`
-5. a aplicação está disponível em http://localhost:3000
-
-
-### **URLs da Aplicação**
-frontend: http://localhost:3000  
-graphcountries: http://localhost:8080  
-backend: http://localhost:5000  
+2. instale as dependências do projeto com `npm install`
+3. inicie a aplicação com `npm start`
+4. a aplicação está disponível em http://localhost:3000
 
 ---
 ### **Sobre Mim**
 Olá, eu sou Milton Bastos, sou de Salvador-BA, hoje moro em Blumenau-SC, aqui conheci minha esposa e juntos ganhamos nossa filha Amanda.  
-<br>
-Sou apaixonado por software e programação
+Sou apaixonado por tecnologia e programação, trabalho na área de TI desde os meus 19 anos e atualmente foco em desenvolvimento web utilizando ReactJS e C#.Net

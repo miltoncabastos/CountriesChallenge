@@ -3,7 +3,7 @@
 namespace CountriesChallenge.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/openapi")]
     public class OpenApiController : ControllerBase
     {
         [HttpGet]

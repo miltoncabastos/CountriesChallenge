@@ -22,9 +22,12 @@ namespace CountriesChallenge.Service
             return new CountryDto
             {
                 NumericCode = country.Code,
-                Capital = country.Capital,
+
                 Area = country.Area,
                 Population = country.Population,
+                PopulationDensity = country.PopulationDensity,
+                Capital = country.Capital,
+                
                 Name = country.Name,
                 TopLevelDomains = country.TopLevelDomains
             };
@@ -45,9 +48,12 @@ namespace CountriesChallenge.Service
         private Country MountCountry(Country country, CountryDto countryDto)
         {
             country.Code = countryDto.NumericCode;
-            country.Capital = countryDto.Capital;
+
             country.Area = countryDto.Area;
             country.Population = countryDto.Population;
+            country.PopulationDensity = countryDto.PopulationDensity;
+            country.Capital = countryDto.Capital;
+            
             country.Name = countryDto.Name;
             country.TopLevelDomains = countryDto.TopLevelDomains;
 

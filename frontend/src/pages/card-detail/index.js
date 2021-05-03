@@ -3,11 +3,21 @@ import { useParams } from 'react-router-dom'
 import {
     Grid,
     CircularProgress,
-    makeStyles
+    makeStyles,
+    Snackbar,
+    Slide
 } from '@material-ui/core'
 import CardCountryDetail from '../../components/card-country-detail'
 
-const { API_ENDPOINT } = process.env;
+// const API_URL = 'https://localhost:44304/api';
+const API_URL = 'https://localhost:5001/api';
+const LOGIN = 'admin'
+const PASSWORD = 'admin'
+
+const FEEDBACK_DEFAULT = {
+    open: false,
+    message:''
+}
 
 const useStyle = makeStyles({
     root: {
@@ -17,8 +27,15 @@ const useStyle = makeStyles({
 
 export default function CardDetail() {
     const classes = useStyle();
+    
     const [country, setCountry] = useState();
+    const [feedback, setFeedback] = useState(FEEDBACK_DEFAULT);
+
     const { numericCode } = useParams();
+
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/json');
+    headers.set('Authorization', `Basic ${window.btoa(`${LOGIN}:${PASSWORD}`)}`);
 
     useEffect(() => {
         async function fetchData() {
@@ -79,28 +96,63 @@ export default function CardDetail() {
     }
 
     async function getCountryUpdated() {
-        const countryUpdated = await fetch(`${API_ENDPOINT}/country/${numericCode}`)
-            .then(res => res.json())
-            .catch(ex => console.log("no country updated"))
+        try {
+            const response = await fetch(`${API_URL}/country/${numericCode}`, {
+                method: 'get',          
+                headers,
+            });
+            const data = await response.json();
+            return data;
+        } catch(err){
+            return null
+        }
+    }    
 
-        return countryUpdated;
-    }
-
-    function handleSave(country) {
+    async function handleSave(country) {
         const model = {
             NumericCode: country.numericCode,
-            Name: country.name,
-            Capital: country.capital,
+            
             Area: country.area,
             Population: country.population,
+            PopulationDensity: country.populationDensity,
+            Capital: country.capital,
+
             TopLevelDomains: country.topLevelDomains,
+            Name: country.name,
         }
 
-        fetch(`${API_ENDPOINT}/country`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(model)
+        try {
+            const response = await fetch(`${API_URL}/country`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(model),
+            })
+
+            // console.log('response: ', response);
+            // const data = await response.json();
+            // console.log('data: ', data);
+
+            if(!response.ok)
+            {
+                handleOpenFeedback('Algum erro aconteceu')
+                return;
+            }
+
+            handleOpenFeedback('Salvo com sucesso!');
+        } catch(err) {
+            return err;
+        }
+    }
+
+    function handleOpenFeedback(message){
+        setFeedback({
+            open: true,
+            message
         })
+    }
+
+    function handleCloseFeedback(){
+        setFeedback(FEEDBACK_DEFAULT);
     }
 
     return (
@@ -109,6 +161,13 @@ export default function CardDetail() {
                 <Grid container justify="center">
                     {!country && <CircularProgress size={"5rem"} />}
                     {country && <CardCountryDetail country={country} handleSave={handleSave} />}
+                    <Snackbar
+                        open={feedback.open}
+                        onClose={handleCloseFeedback}
+                        message={feedback.message}
+                        key={<Slide direction="Down"/>}
+                        autoHideDuration={2000}
+                    />
                 </Grid>
             </Grid>
         </Grid>
