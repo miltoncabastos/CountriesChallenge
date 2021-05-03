@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core'
 import CardCountryDetail from '../../components/card-country-detail'
 
-// const API_URL = 'https://localhost:44304/api';
 const API_URL = 'https://localhost:5001/api';
 const LOGIN = 'admin'
 const PASSWORD = 'admin'
@@ -127,10 +126,6 @@ export default function CardDetail() {
                 headers,
                 body: JSON.stringify(model),
             })
-
-            // console.log('response: ', response);
-            // const data = await response.json();
-            // console.log('data: ', data);
 
             if(!response.ok)
             {
